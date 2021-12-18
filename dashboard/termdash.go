@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	ps "github.com/mitchellh/go-ps"
 	"github.com/mum4k/termdash"
 	"github.com/mum4k/termdash/cell"
 	"github.com/mum4k/termdash/container"
@@ -39,7 +40,21 @@ func getCPU() int {
 	}
 	return metric
 }
+func listProcesses() {
+	processList, err := ps.Processes()
+	if err != nil {
+		fmt.Println("ps.Processes() Failed, are you using windows?")
+		return
+	}
 
+	// map ages
+	for x := range processList {
+		var process ps.Process
+		process = processList[x]
+		fmt.Printf("%d\t%s\n", process.Pid(), process.Executable())
+		// do os.* stuff on the pid
+	}
+}
 func getMemory() uint64 {
 	var system_memory uint64 = memory.TotalMemory()
 	dt := time.Now().String()
